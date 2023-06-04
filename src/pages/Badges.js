@@ -57,7 +57,7 @@ const Badges = () => {
         progress,
         streak
       `).eq('user', user.id).single();
-      setGoal(data || {progress: 0, goal: 0});
+      setGoal(data);
       setLoading(false);
     }
 
@@ -68,14 +68,6 @@ const Badges = () => {
     return null;
   }
 
-  if(!userGoal) {
-    return (
-      <Box sx={{height: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%'}}>
-        <Button variant='contained' color="primary" fullWidth onClick={() => {navigate('/add-goal')}}>Add Goal</Button>
-      </Box>
-    );
-  }
-
   return (
     <div>
       <Header title={"Achievements"} />
@@ -83,14 +75,26 @@ const Badges = () => {
         <Stack spacing={2}>
           <Paper sx={{padding: "16px 12px"}}>
             <Box sx={{display: 'flex', alignItem: 'center', justifyContent: 'center'}}>
-              <Typography align="center" sx={{fontSize: 20}}>You have finished reading <b>{userGoal.progress}</b> books! Your goal was <b>{userGoal.goal}</b></Typography>
+              {userGoal && userGoal?.goal >= 0 ? 
+                <Typography align="center" sx={{fontSize: 20}}>You have finished reading <b>{userGoal.progress}</b> books! Your goal was <b>{userGoal.goal}</b></Typography> :
+                <Typography align="center" sx={{fontSize: 20}}>You have not added your goal yet!</Typography>
+              } 
             </Box>
           </Paper>
+          {
+            userGoal && userGoal?.goal >= 0 ?
+            <Box sx={{height: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%'}}>
+              <Button variant='contained' color="primary" fullWidth onClick={() => {navigate('/edit-goal')}}>Edit Goal</Button>
+            </Box> :
+            <Box sx={{height: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%'}}>
+              <Button variant='contained' color="primary" fullWidth onClick={() => {navigate('/add-goal')}}>Add Goal</Button>
+            </Box>
+          }
           <Typography sx={{fontSize: 22}}>Badges</Typography>
           <Grid container>
             {
               badges.map((badge, index) => {
-                const sx = userGoal.progress >= badge.target ? {
+                const sx = userGoal?.progress >= badge.target ? {
                   padding: 2,
                   display: 'flex',
                   alignItems: 'center',

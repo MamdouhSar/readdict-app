@@ -22,7 +22,7 @@ export default function HomeSlider() {
           cover_image,
           page_count
         )
-      `).eq('user_id', user.id).eq('finished', false);
+      `).eq('user_id', user.id).eq('finished', false).gt('progress', 0);
       setBooks(data);
       setLoading(false);
     };

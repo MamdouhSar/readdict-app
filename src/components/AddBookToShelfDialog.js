@@ -60,9 +60,11 @@ export default function AddBookToShelfDialog({
           .insert({ book_id: parseInt(id), user_id: user.id, shelf: parseInt(shelfIdentifier) });
       }
     } else {
-      await supabase
-      .from('user_books')
-      .insert({ book_id: parseInt(id), user_id: user.id });
+      if(!userBook) {
+        await supabase
+        .from('user_books')
+        .insert({ book_id: parseInt(id), user_id: user.id });
+      }
     }
     onClose();
   }

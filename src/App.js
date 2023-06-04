@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Routes, Route } from 'react-router-dom';
 
@@ -8,13 +7,13 @@ import Login from './pages/Login';
 import BookReadingPage from './pages/BookReadingPage';
 import BookPage from './pages/BookPage';
 
-import { supabase } from './supabaseClient';
 import AddGoalPage from './pages/AddGoalPage';
 import SearchPage from './pages/SearchPage';
 import AddNewShelf from './pages/AddNewShelf';
 import LibraryPage from './pages/LibraryPage';
 import LibraryShelfPage from './pages/LibraryShelfPage';
 import Badges from './pages/Badges';
+import EditGoalPage from './pages/EditGoalPage';
 
 
 const theme = createTheme({
@@ -29,35 +28,10 @@ const theme = createTheme({
     background: {
       paper: '#FEF7FF'
     }
-  },
-  components: {
-    MuiBottomNavigationAction: {
-      styleOverrides: {
-        selected: {
-          color: "#6750A4"
-        }
-      }
-    }
   }
 });
 
 function App() {
-  const [session, setSession] = useState(null)
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
-
   return (
     <ThemeProvider theme={theme}>
       <Routes>
@@ -66,6 +40,7 @@ function App() {
         <Route path="library" element={<LibraryPage/>}/>
         <Route path="library/:shelfId" element={<LibraryShelfPage/>}/>
         <Route path="add-goal" element={<AddGoalPage/>}/>
+        <Route path="edit-goal" element={<EditGoalPage/>}/>
         <Route path="add-shelf" element={<AddNewShelf/>}/>
         <Route path="search" element={<SearchPage/>}/>
         <Route path="book/:bookId" element={<BookPage/>}/>

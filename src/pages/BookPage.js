@@ -31,9 +31,11 @@ const BookPage = () => {
       id
       `)
       .eq('book_id', parseInt(bookId))
-      .eq('user_id', user.id).single();
-      if(userBook) {
-        navigate(`/user-book/${userBook.id}`)
+      .eq('user_id', user.id);
+      console.log(userBook);
+      if(userBook?.length > 0) {
+        console.log("HERE");
+        navigate(`/user-book/${userBook[0].id}`)
       }
     }
 

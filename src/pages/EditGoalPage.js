@@ -6,9 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 
-const AddGoalPage = () => {
+const EditGoalPage = () => {
   const navigate = useNavigate();
   const [ goal, setGoal ] = useState(1);
+  const [ goalObject, setGoalObject ] = useState(null);
   const [ loading, setLoading ] = useState(false);
 
   useEffect(() => {
@@ -22,6 +23,24 @@ const AddGoalPage = () => {
     getUser();
   }, []);
 
+  useEffect(() => {
+    setLoading(true);
+    const getGoal = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+        const { data } = await supabase.from('user_goals').select(`
+        id,
+        goal,
+        progress,
+        streak
+      `).eq('user', user.id).single();
+      setGoal(data?.goal || 1);
+      setGoalObject(data);
+      setLoading(false);
+    }
+
+    getGoal();
+  }, [])
+
 
   const handleGoalChange = (event) => {
     if(event.target.value) {
@@ -33,10 +52,9 @@ const AddGoalPage = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
     await supabase
       .from('user_goals')
-      .insert({ goal: goal, user: user.id, progress: 0, streak: 0 })
+      .update({ goal: goal }).eq('id', goalObject?.id);
     setLoading(false);
     navigate(-1);
   };
@@ -68,4 +86,4 @@ const AddGoalPage = () => {
   );
 };
 
-export default AddGoalPage;
+export default EditGoalPage;

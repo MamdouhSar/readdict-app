@@ -12,7 +12,7 @@ const HomeGoals = () => {
     setLoading(true);
     const getGoal = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-        const { data } = await supabase.from('user_goals').select(`
+      const { data } = await supabase.from('user_goals').select(`
         id,
         goal,
         progress,
